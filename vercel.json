@@ -1,0 +1,14 @@
+{
+    "builds":[
+        {
+            "src":"deepfake/app1.ipynb",
+            "use":"@vercel/python"
+        }
+    ],
+    "routes":[
+        {
+            "src":"/(.*)",
+            "dest":"deepfake/app1.ipynb"
+        }
+    ]
+}
