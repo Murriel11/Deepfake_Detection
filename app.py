@@ -101,7 +101,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # Load the pre-trained InceptionResNetV2 model
-model = load_model('deepfake_model.h5')
+
 
 # Set the upload folder
 UPLOAD_FOLDER = 'static/uploads'
@@ -149,7 +149,7 @@ def predict():
             
             # Load the model
             # model = load_model('deepfake_model.h5')  # Only if you want to load the model here instead of globally
-            
+            model = load_model('deepfake_model.h5')
             # Get prediction result
             prediction = predict_single_image(model, file_path)
             probability = prediction
