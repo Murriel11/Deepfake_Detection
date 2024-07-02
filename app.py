@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # Load the pre-trained InceptionResNetV2 model
-model = load_model('deepfake_detection_model2.h5')
+
 
 # Set the upload folder
 UPLOAD_FOLDER = 'static/uploads'
@@ -58,7 +58,7 @@ def predict():
             # Open the image and rescale it
           # Resize the image
             file.save(file_path)
-
+            model = load_model('deepfake_model.h5')
             # Get prediction result
             prediction = predict_single_image(model, file_path)
 
