@@ -170,7 +170,7 @@
 
   <!-- <a href="#" class="back-to-top"><i class="fa-solid fa-circle-chevron-up fa-lg" style="color: #a99985;"></i></i></a> -->
 
-  <script src="https://unpkg.com/uppload@2.3.0/dist/browser.js" crossorigin="anonymous"></script>
+<!--   <script src="https://unpkg.com/uppload@2.3.0/dist/browser.js" crossorigin="anonymous"></script>
   <script>
     var uploadedFilePath = '';
     var uploader = new window.uppload_Uppload({
@@ -225,8 +225,58 @@
       })
       
     });
-    
-    
+     -->
+  <script src="https://unpkg.com/uppload@2.3.0/dist/browser.js" crossorigin="anonymous"></script>
+<script>
+  var uploadedFilePath = '';
+  var uploader = new window.uppload_Uppload({
+    lang: window.uppload_en,
+    call: ".uppload-button",
+    uploader: window.uppload_xhrUploader({
+      endpoint: "/predict",
+
+      responseFunction: responseText => {
+        let json;
+        try {
+          json = JSON.parse(responseText);
+        } catch (e) {
+          console.error("Could not parse JSON!", e);
+          console.error("Response received:", responseText);
+          return; // Exit the function if JSON parsing fails
+        }
+        
+        console.log(json);
+        uploadedFilePath = json.img_url; // Store the file path
+       
+        $("#output").val(json.prediction);
+        document.getElementById("image-output").src = "";
+        var randomString = Math.random().toString(36).substring(2, 15);
+        var url = document.getElementById("image-output").src = uploadedFilePath + "?" + randomString;
+        
+        var html = '<span class="label label-info" style="margin-right: 10px; font-family:Montserrat; font-weight: 950; font-size: 1.3rem;color:#546a7b;">Prediction Results</span>';
+        html += '<div class="row">';
+        html += '<div class="col-lg-3">';
+        html += '<img src="' + url + '" style="width: 80px; margin: 10px;"/>';
+        html += '</div>';
+        html += '<div class="col-lg-9" style="margin: auto;">';
+        
+        if (json.prediction > 0.5) {
+          html += '<div class="custom-progress-bar red"><span style="width: ' + ((json.prediction) * 100).toFixed(0) + '%"></span><div class="custom-progress-text">' + ((json.prediction) * 100).toFixed(2) + '%</div></div>';
+        } else {
+          html += '<div class="custom-progress-bar green"><span style="width: ' + ((1 - json.prediction) * 100).toFixed(0) + '%"></span><div class="custom-progress-text">' + ((1 - json.prediction) * 100).toFixed(2) + '%</div></div>';
+        }
+        
+        html += '</div>';
+        html += '<p style="margin-top: 10px; font-family:Montserrat; font-weight: 950; font-size: 1.3rem;color:#546a7b;">The uploaded image is ' + json.result + '</p>';  // Add the result text here
+        html += '</div>';
+
+        var result_div = document.getElementById('result');
+        result_div.innerHTML = html;
+        result_div.style.display = "block";
+      }
+    })
+  });
+
   
     uploader.use(
       new window.uppload_Local({
